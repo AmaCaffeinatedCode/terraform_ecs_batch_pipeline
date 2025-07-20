@@ -19,3 +19,10 @@ module "vpc" {
   tags         = module.tags.tags
 }
 
+module "s3" {
+  source      = "../modules/s3"
+  name        = var.name
+  environment = var.environment
+  project_url = var.project_url
+  tags        = module.tags.tags
+}
