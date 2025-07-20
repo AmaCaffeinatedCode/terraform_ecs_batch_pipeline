@@ -26,3 +26,11 @@ module "s3" {
   project_url = var.project_url
   tags        = module.tags.tags
 }
+
+module "sqs" {
+  source      = "../modules/sqs"
+  name        = var.name
+  environment = var.environment
+  project_url = var.project_url
+  tags        = module.tags.tags
+}
