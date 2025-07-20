@@ -55,14 +55,6 @@ module "iam" {
   sqs_queue_arn = module.sqs.queue_arn
 }
 
-module "ecr" {
-  source      = "./modules/ecr"
-  name        = var.name
-  environment = var.environment
-  project_url = var.project_url
-  tags        = module.tags.tags
-}
-
 module "ecs" {
   source      = "./modules/ecs"
   name        = var.name
@@ -71,7 +63,7 @@ module "ecs" {
   tags        = module.tags.tags
 
   region              = var.region
-  ecr_image           = module.ecr.ecr_repository_url ###
+  ecr_image           = var.ecr_image
 
   sqs_queue_url       = module.sqs.queue_url
   sqs_queue_arn       = module.sqs.queue_arn

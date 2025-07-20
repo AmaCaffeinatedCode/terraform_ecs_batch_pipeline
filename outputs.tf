@@ -43,11 +43,6 @@ output "iam_task_role_arn" {
   value       = module.iam.task_role_arn
 }
 
-output "ecr_repository_url" {
-  description = "ECR repository URL"
-  value       = module.ecr.repository_url
-}
-
 output "ecs_cluster_id" {
   description = "ECS cluster ID"
   value       = module.ecs.ecs_cluster_id

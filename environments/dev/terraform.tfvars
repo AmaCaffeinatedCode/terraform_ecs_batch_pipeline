@@ -24,3 +24,5 @@ region        = "us-east-1"
 desired_count = 1
 min_capacity  = 1
 max_capacity  = 4
+
+# "ecr_image" is set dinamically in the CI/CD pipeline
