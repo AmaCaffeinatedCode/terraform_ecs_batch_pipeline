@@ -41,3 +41,15 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "destination" {
     }
   }
 }
+
+resource "aws_s3_bucket_notification" "source_to_sqs" {
+  bucket = aws_s3_bucket.source.id
+
+  queue {
+    queue_arn     = var.sqs_queue_arn
+    events        = ["s3:ObjectCreated:*"]
+    filter_prefix = var.filter_prefix
+  }
+
+  depends_on = [aws_s3_bucket.source]
+}

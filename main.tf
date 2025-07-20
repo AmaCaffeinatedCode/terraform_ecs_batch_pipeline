@@ -20,12 +20,16 @@ module "vpc" {
 }
 
 module "s3" {
-  source      = "../modules/s3"
-  name        = var.name
-  environment = var.environment
-  project_url = var.project_url
-  tags        = module.tags.tags
+  source        = "../modules/s3"
+  name          = var.name
+  environment   = var.environment
+  project_url   = var.project_url
+  tags          = module.tags.tags
+
+  sqs_queue_arn = module.sqs.queue_arn
+  filter_prefix = ""  # Optional S3 key prefix filter for event notifications
 }
+
 
 module "sqs" {
   source      = "../modules/sqs"
