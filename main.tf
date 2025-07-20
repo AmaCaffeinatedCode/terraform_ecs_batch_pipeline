@@ -3,12 +3,19 @@ provider "aws" {
 }
 
 resource "aws_ecr_repository" "this" {
-  name                 = "${var.name}_${var.environment}_repo"
+  name                 = var.name
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true
   }
 
-  tags = var.tags
+  tags = merge(
+    var.tags,
+    {
+      Name        = var.name,
+      Environment = var.environment,
+      project_url = var.project_url
+    }
+  )
 }

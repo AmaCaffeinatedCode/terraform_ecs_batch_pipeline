@@ -9,6 +9,7 @@ variable "tags" {
 
 variable "environment" {
   type = string
+  default = "dev"
 }
 
 variable "project_url" {
