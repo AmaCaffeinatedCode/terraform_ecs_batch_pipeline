@@ -55,7 +55,7 @@ resource "aws_vpc_endpoint" "interface" {
   service_name      = "com.amazonaws.${data.aws_region.current.name}.${each.key}"
   vpc_endpoint_type = "Interface"
   subnet_ids        = aws_subnet.endpoints[*].id
-  security_group_ids = [] # Added in ECS module
+  security_group_ids = var.interface_endpoint_sg_ids
   private_dns_enabled = true
   tags                = var.tags
 }

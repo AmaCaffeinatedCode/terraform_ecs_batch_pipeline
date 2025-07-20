@@ -3,6 +3,21 @@ variable "name" {
   type        = string
 }
 
+variable "tags" {
+  description = "Tags to apply to all resources"
+  type        = map(string)
+}
+
+variable "environment" {
+  description = "Deployment environment"
+  type        = string
+}
+
+variable "project_url" {
+  description = "URL of the GitHub repository"
+  type        = string
+}
+
 variable "cidr_block" {
   description = "VPC CIDR block"
   type        = string
@@ -27,17 +42,8 @@ variable "endpoint_subnet_cidrs" {
   default     = ["10.0.11.0/24", "10.0.12.0/24"]
 }
 
-variable "tags" {
-  description = "Tags to apply to all resources"
-  type        = map(string)
-}
-
-variable "environment" {
-  description = "Deployment environment"
-  type        = string
-}
-
-variable "project_url" {
-  description = "URL of the GitHub repository"
-  type        = string
+variable "interface_endpoint_sg_ids" {
+  description = "Security group IDs for interface endpoints"
+  type        = list(string)
+  default     = []
 }
