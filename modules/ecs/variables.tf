@@ -36,11 +36,6 @@ variable "sqs_queue_url" {
   type        = string
 }
 
-variable "sqs_queue_arn" {
-  description = "SQS queue ARN for IAM policies"
-  type        = string
-}
-
 variable "private_subnet_ids" {
   description = "List of private subnet IDs for ECS tasks"
   type        = list(string)
@@ -57,18 +52,6 @@ variable "desired_count" {
   default     = 1
 }
 
-variable "max_capacity" {
-  description = "Max ECS task count for autoscaling"
-  type        = number
-  default     = 4
-}
-
-variable "min_capacity" {
-  description = "Min ECS task count for autoscaling"
-  type        = number
-  default     = 1
-}
-
 variable "task_execution_role_arn" {
   description = "IAM Role ARN used by ECS task execution"
   type        = string
@@ -76,5 +59,10 @@ variable "task_execution_role_arn" {
 
 variable "task_role_arn" {
   description = "IAM Role ARN used by ECS task"
+  type        = string
+}
+
+variable "log_group_name" {
+  description = "CloudWatch Log Group name passed in from the cloudwatch module"
   type        = string
 }

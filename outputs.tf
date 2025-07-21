@@ -43,6 +43,11 @@ output "iam_task_role_arn" {
   value       = module.iam.task_role_arn
 }
 
+output "cloudwatch_log_group_name" {
+  description = "Name of the CloudWatch log group used by ECS"
+  value       = module.cloudwatch.log_group_name
+}
+
 output "ecs_cluster_id" {
   description = "ECS cluster ID"
   value       = module.ecs.ecs_cluster_id

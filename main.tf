@@ -55,6 +55,13 @@ module "iam" {
   sqs_queue_arn = module.sqs.queue_arn
 }
 
+module "cloudwatch" {
+  source      = "./modules/cloudwatch"
+  name        = var.name
+  environment = var.environment
+  tags        = module.tags.tags
+}
+
 module "ecs" {
   source      = "./modules/ecs"
   name        = var.name
@@ -71,10 +78,12 @@ module "ecs" {
   private_subnet_ids  = module.vpc.private_subnet_ids
   security_group_id   = module.security_group.security_group_id
 
-  desired_count       = 1
-  min_capacity        = 1
-  max_capacity        = 4
+  desired_count       = var.desired_count
+  min_capacity        = var.min_capacity
+  max_capacity        = var.max_capacity
 
   task_execution_role_arn = module.iam.task_execution_role_arn
   task_role_arn           = module.iam.task_role_arn
+
+  log_group_name = module.cloudwatch.log_group_name
 }
