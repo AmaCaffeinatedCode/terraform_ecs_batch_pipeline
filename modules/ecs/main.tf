@@ -20,7 +20,7 @@ resource "aws_ecs_task_definition" "batch" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = var.log_group_name
+          "awslogs-group"         = "/ecs/${var.name}-${var.environment}-batch"
           "awslogs-region"        = var.region
           "awslogs-stream-prefix" = "ecs"
         }

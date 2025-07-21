@@ -61,8 +61,3 @@ variable "task_role_arn" {
   description = "IAM Role ARN used by ECS task"
   type        = string
 }
-
-variable "log_group_name" {
-  description = "CloudWatch Log Group name passed in from the cloudwatch module"
-  type        = string
-}

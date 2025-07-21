@@ -55,13 +55,6 @@ module "iam" {
   sqs_queue_arn = module.sqs.queue_arn
 }
 
-module "cloudwatch" {
-  source      = "./modules/cloudwatch"
-  name        = var.name
-  environment = var.environment
-  tags        = module.tags.tags
-}
-
 module "ecs" {
   source      = "./modules/ecs"
   name        = var.name
@@ -84,6 +77,19 @@ module "ecs" {
 
   task_execution_role_arn = module.iam.task_execution_role_arn
   task_role_arn           = module.iam.task_role_arn
+}
 
-  log_group_name = module.cloudwatch.log_group_name
+module "cloudwatch" {
+  source      = "./modules/cloudwatch"
+  name        = var.name
+  environment = var.environment
+  project_url = var.project_url
+  tags        = module.tags.tags
+
+  region            = var.region
+  sqs_queue_arn     = module.sqs.queue_arn
+  ecs_cluster_name  = module.ecs.ecs_cluster_name
+  ecs_service_name  = module.ecs.ecs_service_name
+  min_capacity      = var.min_capacity
+  max_capacity      = var.max_capacity
 }
