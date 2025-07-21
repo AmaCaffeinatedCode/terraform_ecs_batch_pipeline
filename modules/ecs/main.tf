@@ -47,6 +47,4 @@ resource "aws_ecs_service" "batch" {
     assign_public_ip = false
     security_groups  = [var.security_group_id]
   }
-
-  depends_on = [aws_iam_role_policy_attachment.task_execution_managed]
 }

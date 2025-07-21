@@ -37,7 +37,7 @@ resource "aws_route_table_association" "private" {
 # --- VPC Endpoints ---
 resource "aws_vpc_endpoint" "s3" {
   vpc_id            = aws_vpc.this.id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.s3"
+  service_name      = "com.amazonaws.${data.aws_region.current.id}.s3"
   vpc_endpoint_type = "Gateway"
   route_table_ids   = [aws_route_table.private.id]
   tags              = var.tags
@@ -52,7 +52,7 @@ resource "aws_vpc_endpoint" "interface" {
   ])
 
   vpc_id            = aws_vpc.this.id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.${each.key}"
+  service_name      = "com.amazonaws.${data.aws_region.current.id}.${each.key}"
   vpc_endpoint_type = "Interface"
   subnet_ids        = aws_subnet.endpoints[*].id
   security_group_ids = var.interface_endpoint_sg_ids

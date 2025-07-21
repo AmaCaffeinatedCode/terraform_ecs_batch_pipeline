@@ -12,9 +12,10 @@ resource "aws_security_group" "this" {
   })
 }
 
-resource "aws_security_group_egress" "all" {
+resource "aws_security_group_rule" "egress_all" {
   security_group_id = aws_security_group.this.id
 
+  type = "egress"
   from_port   = 0
   to_port     = 0
   protocol    = "-1"

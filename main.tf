@@ -22,7 +22,7 @@ module "vpc" {
   azs                      = var.azs
   private_subnet_cidrs     = var.private_subnet_cidrs
   endpoint_subnet_cidrs    = var.endpoint_subnet_cidrs
-  interface_endpoint_sg_ids = [module.security_group.security_group_id] ###
+  interface_endpoint_sg_ids = [module.security-group.security_group_id]
   environment              = var.environment
   project_url              = var.project_url
   tags                     = module.tags.tags
@@ -66,14 +66,11 @@ module "ecs" {
   ecr_image           = var.ecr_image
 
   sqs_queue_url       = module.sqs.queue_url
-  sqs_queue_arn       = module.sqs.queue_arn
 
   private_subnet_ids  = module.vpc.private_subnet_ids
-  security_group_id   = module.security_group.security_group_id
+  security_group_id   = module.security-group.security_group_id
 
   desired_count       = var.desired_count
-  min_capacity        = var.min_capacity
-  max_capacity        = var.max_capacity
 
   task_execution_role_arn = module.iam.task_execution_role_arn
   task_role_arn           = module.iam.task_role_arn

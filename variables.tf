@@ -57,6 +57,7 @@ variable "interface_endpoint_sg_ids" {
 variable "sqs_queue_arn" {
   description = "SQS queue ARN for IAM policies"
   type        = string
+  default     = ""
 }
 
 # ECS module variables
@@ -69,6 +70,7 @@ variable "region" {
 variable "ecr_image" {
   description = "ECR image URI for the ECS task container"
   type        = string
+  default     = ""
 }
 
 variable "desired_count" {
