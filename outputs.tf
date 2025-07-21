@@ -10,7 +10,7 @@ output "private_subnet_ids" {
 
 output "security_group_id" {
   description = "Security Group ID used for ECS tasks"
-  value       = module.security-group.security_group_id
+  value       = module.vpc.security_group_id
 }
 
 output "s3_source_bucket_name" {

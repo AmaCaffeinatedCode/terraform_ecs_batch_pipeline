@@ -5,6 +5,15 @@ resource "aws_vpc" "this" {
   tags                 = var.tags
 }
 
+module "security-group" {
+  source      = "./modules/security-group"
+  vpc_id      = aws_vpc.this.id
+  name        = var.name
+  environment = var.environment
+  project_url = var.project_url
+  tags        = var.tags
+}
+
 resource "aws_subnet" "private" {
   count                   = length(var.private_subnet_cidrs)
   vpc_id                  = aws_vpc.this.id
@@ -55,7 +64,7 @@ resource "aws_vpc_endpoint" "interface" {
   service_name      = "com.amazonaws.${data.aws_region.current.id}.${each.key}"
   vpc_endpoint_type = "Interface"
   subnet_ids        = aws_subnet.endpoints[*].id
-  security_group_ids = var.interface_endpoint_sg_ids
+  security_group_ids = [module.security-group.security_group_id]
   private_dns_enabled = true
   tags                = var.tags
 }

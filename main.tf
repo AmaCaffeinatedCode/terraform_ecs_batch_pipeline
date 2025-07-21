@@ -6,15 +6,6 @@ module "tags" {
   tags        = var.tags
 }
 
-module "security-group" {
-  source      = "./modules/security-group"
-  name        = var.name
-  vpc_id      = module.vpc.vpc_id
-  environment = var.environment
-  project_url = var.project_url
-  tags        = module.tags.tags
-}
-
 module "vpc" {
   source                   = "./modules/vpc"
   name                     = var.name
@@ -22,7 +13,6 @@ module "vpc" {
   azs                      = var.azs
   private_subnet_cidrs     = var.private_subnet_cidrs
   endpoint_subnet_cidrs    = var.endpoint_subnet_cidrs
-  interface_endpoint_sg_ids = [module.security-group.security_group_id]
   environment              = var.environment
   project_url              = var.project_url
   tags                     = module.tags.tags
@@ -68,7 +58,7 @@ module "ecs" {
   sqs_queue_url       = module.sqs.queue_url
 
   private_subnet_ids  = module.vpc.private_subnet_ids
-  security_group_id   = module.security-group.security_group_id
+  security_group_id   = module.vpc.security_group_id
 
   desired_count       = var.desired_count
 

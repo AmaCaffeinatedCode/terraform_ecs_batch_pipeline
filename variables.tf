@@ -47,12 +47,6 @@ variable "endpoint_subnet_cidrs" {
   default     = ["10.0.11.0/24", "10.0.12.0/24"]
 }
 
-variable "interface_endpoint_sg_ids" {
-  description = "Security group IDs to attach to VPC interface endpoints"
-  type        = list(string)
-  default     = []
-}
-
 # IAM module variables
 variable "sqs_queue_arn" {
   description = "SQS queue ARN for IAM policies"

@@ -9,3 +9,8 @@ output "private_subnet_ids" {
 output "endpoint_subnet_ids" {
   value = aws_subnet.endpoints[*].id
 }
+
+output "security_group_id" {
+  description = "Security Group ID created inside the VPC module"
+  value = module.security-group.security_group_id
+}
