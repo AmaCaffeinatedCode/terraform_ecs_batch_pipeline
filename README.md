@@ -4,7 +4,7 @@
 
 ## Project Overview
 
-This Terraform project provisions a complete infrastructure setup for running containerized batch jobs on AWS using ECS and Fargate. It includes networking, security, IAM roles, VPC endpoints, logging, and S3/SQS integrations — supporting a scalable and secure batch processing pipeline.
+This Terraform project provisions a complete infrastructure setup for running containerized batch jobs on AWS using ECS and Fargate. It includes networking, security, IAM roles, VPC endpoints, logging, autoscaling, and S3/SQS integrations — supporting a scalable and secure batch processing pipeline triggered by queue events.
 
 ---
 
@@ -18,7 +18,8 @@ This Terraform project provisions a complete infrastructure setup for running co
 - IAM Roles for ECS Task and Execution  
 - S3 buckets (source + destination)  
 - SQS Queue for triggering ECS tasks  
-- Security Groups for ECS and endpoints
+- CloudWatch Alarms and Autoscaling policies based on SQS queue length  
+- Security Groups for ECS and endpoints  
 
 ---
 
@@ -33,8 +34,8 @@ This Terraform project provisions a complete infrastructure setup for running co
 
 The GitHub Actions CI/CD pipeline uses the following secrets:
 
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
+- `AWS_ACCESS_KEY_ID`  
+- `AWS_SECRET_ACCESS_KEY`  
 
 ### 2. Deployment
 
@@ -49,7 +50,7 @@ A GitHub Actions workflow (`.github/workflows/deploy.yml`) is included to automa
 The pipeline:
 - Initializes Terraform  
 - Formats and validates Terraform code  
-- Generates and applies a Terraform plan 
+- Generates and applies a Terraform plan  
 
 It uses GitHub Actions environment secrets for secure authentication.  
 The `PROJECT_URL` variable is injected automatically by the pipeline and passed to Terraform for tagging purposes.
@@ -84,6 +85,6 @@ Refer to the [docs/outputs.md](docs/02_outputs.md) file for all exported values,
 
 ## Additional Notes
 
-- Make sure AWS credentials and Terraform version are aligned with your CI/CD setup.
-- Batch jobs are triggered via SQS. Ensure your application publishes messages to the correct queue format.
-- You can extend this infrastructure by adding task-specific modules, autoscaling, or scheduled triggers.
+- Make sure AWS credentials and Terraform version are aligned with your CI/CD setup.  
+- Batch jobs are triggered via SQS. Ensure your application publishes messages to the correct queue format.  
+- ECS task autoscaling is based on CloudWatch alarms monitoring `ApproximateNumberOfMessagesVisible` in the SQS queue. This ensures the number of running tasks increases when there are unprocessed messages and scales down when idle.
