@@ -1,0 +1,112 @@
+name: Terraform Deploy and Docker Push
+
+on:
+  push:
+    branches:
+      - main
+      - '**'
+
+env:
+  TF_VERSION: '1.12.2'
+  AWS_REGION: 'us-east-1'
+  IMAGE_NAME: 'terraform_ecr_repo'
+  DOCKER_TAG: 'latest'
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main' || (github.ref != 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip-ci]'))
+    runs-on: ubuntu-latest
+    name: Deploy ECR and ECS Batch Pipeline
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set Terraform environment variables
+        run: |
+          echo "TF_VAR_project_url=https://github.com/${{ github.repository }}" >> $GITHUB_ENV
+
+      - name: Set environment for prod (main branch)
+        run: |
+          echo "TF_VAR_environment=prod" >> $GITHUB_ENV
+          echo "TFVARS_FILE_ECS_PIPELINE=terraform_ecs_batch_pipeline/ecs_batch_pipeline/environments/prod/terraform.tfvars" >> $GITHUB_ENV
+        if: github.ref == 'refs/heads/main'
+
+      - name: Set environment for dev (other branches)
+        run: |
+          echo "TF_VAR_environment=dev" >> $GITHUB_ENV
+          echo "TFVARS_FILE_ECS_PIPELINE=terraform_ecs_batch_pipeline/ecs_batch_pipeline/environments/dev/terraform.tfvars" >> $GITHUB_ENV
+        if: github.ref != 'refs/heads/main'
+
+      # ---------- Deploy ECR ----------
+
+      - name: Terraform Init (ECR)
+        working-directory: ./ecr_repo/env
+        run: terraform init -input=false
+
+      - name: Terraform Validate (ECR)
+        working-directory: ./ecr_repo/env
+        run: terraform validate
+
+      - name: Terraform Plan (ECR)
+        working-directory: ./ecr_repo/env
+        run: terraform plan -input=false
+
+#      - name: Terraform Apply (ECR)
+#        working-directory: ./ecr_repo/env
+#        run: terraform apply -auto-approve
+
+#      - name: Extract ECR Repository URL
+#        id: ecr_output
+#        working-directory: ./ecr_repo/env
+#        run: echo "ECR_REPOSITORY_URL=$(terraform output -raw ecr_repository_url)" >> $GITHUB_ENV
+
+      # ---------- Docker Build & Push ----------
+
+#      - name: Login to Amazon ECR
+#        run: |
+#          aws ecr get-login-password --region $AWS_REGION | \
+#          docker login --username AWS --password-stdin $ECR_REPOSITORY_URL
+
+#      - name: Build Docker image
+#        run: docker build -t $IMAGE_NAME:$DOCKER_TAG ./ecr_repo/docker_app
+
+#      - name: Tag Docker image with ECR URI
+#        run: docker tag $IMAGE_NAME:$DOCKER_TAG $ECR_REPOSITORY_URL:$DOCKER_TAG
+
+#      - name: Push Docker image to ECR
+#        run: docker push $ECR_REPOSITORY_URL:$DOCKER_TAG
+
+      # ---------- Deploy ECS ----------
+
+      - name: Set Terraform env vars for ECS deployment
+        run: |
+          echo "TF_VAR_ecr_image=$ECR_REPOSITORY_URL:$DOCKER_TAG" >> $GITHUB_ENV
+
+      - name: Terraform Init (ECS)
+        working-directory: ./ecs_batch_pipeline
+        run: terraform init -input=false
+
+      - name: Terraform Validate (ECS)
+        working-directory: ./ecs_batch_pipeline
+        run: terraform validate
+
+      - name: Terraform Plan (ECS)
+        working-directory: ./ecs_batch_pipeline
+        run: terraform plan -input=false
+
+#      - name: Terraform Apply (ECS)
+#        working-directory: ./ecs_batch_pipeline
+#        run: terraform apply -auto-approve -var-file="$TFVARS_FILE_ECS_PIPELINE"
