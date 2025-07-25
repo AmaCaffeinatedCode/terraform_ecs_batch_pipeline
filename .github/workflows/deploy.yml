@@ -41,13 +41,13 @@ jobs:
       - name: Set environment for prod (main branch)
         run: |
           echo "TF_VAR_environment=prod" >> $GITHUB_ENV
-          echo "TFVARS_FILE_ECS_PIPELINE=terraform_ecs_batch_pipeline/ecs_batch_pipeline/environments/prod/terraform.tfvars" >> $GITHUB_ENV
+          echo "TFVARS_FILE_ECS_PIPELINE=environments/prod/terraform.tfvars" >> $GITHUB_ENV
         if: github.ref == 'refs/heads/main'
 
       - name: Set environment for dev (other branches)
         run: |
           echo "TF_VAR_environment=dev" >> $GITHUB_ENV
-          echo "TFVARS_FILE_ECS_PIPELINE=terraform_ecs_batch_pipeline/ecs_batch_pipeline/environments/dev/terraform.tfvars" >> $GITHUB_ENV
+          echo "TFVARS_FILE_ECS_PIPELINE=environments/dev/terraform.tfvars" >> $GITHUB_ENV
         if: github.ref != 'refs/heads/main'
 
       # ---------- Deploy ECR ----------
